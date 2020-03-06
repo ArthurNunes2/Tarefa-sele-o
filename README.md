@@ -1,3 +1,5 @@
+#coloque o ssid e a senha do wifi nos defines no código, como string.
+
 # Hello World Example
 
 Starts a FreeRTOS task to print "Hello World"
