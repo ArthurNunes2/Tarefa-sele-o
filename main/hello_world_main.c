@@ -7,10 +7,18 @@
 #include "freertos/task.h"
 #include "esp_wifi.h"
 #include "nvs_flash.h"
+/*
+ * DEFINES PARA SSID E PASSWORD
+ */ 
+#define nome "coloque o nome do wifi"
+#define senha "coloque a senha do wifi"
+/*
+ * Variáveis
+ */ 
 bool bot=false,lastbot=false;
 int y=0,a=2,count=0,x=0;
 /*
- *  TASK 
+ *  TASK  COM DE BOUNCE DO BOTÃO
  */
 void led(void *pvParamenters)
 {
@@ -45,6 +53,9 @@ void configled()
     canal.timer_sel  =  LEDC_TIMER_1;
     ledc_channel_config(&canal);
     }
+/*
+ * Printa "Hello world!", aguarda usuário entrar e configura as GPIOs
+ */ 
 void inicia()
 {
   
@@ -63,6 +74,9 @@ void inicia()
    
    
 }
+/*
+ * CONECTA COM WIFI
+ */ 
 void iniciawifi()
 {
      //ISSO TUDO É WIFI
@@ -88,6 +102,7 @@ void app_main(void)
 {   
     inicia();
     configled();
+    //RESPIRA UMA VEZ ANTES DE SEGUIR
     while(1){
         //subindo
         if(x==0){
@@ -95,21 +110,22 @@ void app_main(void)
             if(count==255)
                 x=1;
         }
+        //descendo
         else if(x==1){
             count--;
             if(count==0){
                 x=0;
                 break;
                 }
-                
-        }
+            }
         ledc_set_duty(LEDC_LOW_SPEED_MODE,LEDC_CHANNEL_0,count); 
         ledc_update_duty(LEDC_LOW_SPEED_MODE,LEDC_CHANNEL_0);
         vTaskDelay(10 / portTICK_PERIOD_MS);
             }  
     iniciawifi();
+    //TASK DO DEBOUNCE
     xTaskCreatePinnedToCore(led,"nome",4098,NULL,2,NULL,1);
-    
+    //Respira conforme o botão
     while(1){
         //subindo
         if(x==0&&y==1){
@@ -117,6 +133,7 @@ void app_main(void)
             if(count==255)
                 x=1;
         }
+        //descendo
         else if(x==1&&y==1){
             count--;
             if(count==0)
